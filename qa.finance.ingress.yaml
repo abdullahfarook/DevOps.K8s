@@ -1,0 +1,64 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: qa-finance-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    ingress.kubernetes.io/ssl-redirect: "true"
+    traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
+  name: qa-finance-ingress
+spec:
+  rules:
+    - host: auth.qa.finance.brickclay.nl
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: auth-qa-finance-service
+              servicePort: 80
+
+    - host: portal.qa.finance.brickclay.nl
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: portal-qa-finance-service
+              servicePort: 80
+
+    - host: api.qa.finance.brickclay.nl
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: api-qa-finance-service
+              servicePort: 80
+    
+    - host: auth.prod.finance.brickclay.nl
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: auth-qa-finance-service
+              servicePort: 80
+
+    - host: portal.prod.finance.brickclay.nl
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: portal-qa-finance-service
+              servicePort: 80
+
+    - host: api.prod.finance.brickclay.nl
+
+  tls:
+    - hosts:
+        - auth.qa.finance.brickclay.nl
+        - api.qa.finance.brickclay.nl
+        - portal.qa.finance.brickclay.nl
+        
+        - auth.prod.finance.brickclay.nl
+        - api.prod.finance.brickclay.nl
+        - portal.prod.finance.brickclay.nl
+
+      secretName: brickclay.nl-cert

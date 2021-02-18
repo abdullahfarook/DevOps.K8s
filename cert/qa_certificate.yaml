@@ -1,0 +1,23 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: brickclay.nl-cert
+  namespace: default
+spec:
+  commonName: brickclay.nl
+  secretName: brickclay.nl-cert
+  dnsNames:
+    - brickclay.nl
+
+    - auth.prod.finance.brickclay.nl
+    - portal.prod.finance.brickclay.nl
+    - api.prod.finance.brickclay.nl
+
+    - auth.qa.finance.brickclay.nl
+    - portal.qa.finance.brickclay.nl
+    - api.qa.finance.brickclay.nl
+
+  issuerRef:
+    name: letsencrypt-qa
+    kind: ClusterIssuer

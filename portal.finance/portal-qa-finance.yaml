@@ -1,0 +1,51 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: portal-qa-finance-deployment
+spec:
+  selector:
+    matchLabels:
+      app: portal-qa-finance
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      name: portal-qa-finance
+      labels:
+        app: portal-qa-finance
+    spec:
+      containers:
+        - name: portal-qa-finance
+          image: multiservicecr.azurecr.io/portal-qa-finance:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: acr-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: portal-qa-finance-service
+spec:
+  type: NodePort
+  selector:
+    app: portal-qa-finance
+  ports:
+    - name: portal-qa-finance-port
+      port: 80
+      protocol: TCP
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: portal-qa-finance-ingress
+spec:
+  rules:
+    - host: portal.prod.finance.brickclay.nl
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: portal-qa-finance-service
+              servicePort: 80
